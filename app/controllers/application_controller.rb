@@ -6,9 +6,8 @@ class ApplicationController < ActionController::Base
   helper_method :current_user, :show_banner
 
   def authenticate
-    redirect_to :back
-      unless current_user
-      end
+    redirect_to :back unless current_user
+    
   end
 
   def current_user
