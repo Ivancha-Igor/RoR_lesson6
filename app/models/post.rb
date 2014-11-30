@@ -6,4 +6,6 @@ class Post < ActiveRecord::Base
 
   belongs_to :user
   has_many :comments, dependent: :destroy
+
+  scope :newest, -> {order(:created_at).reverse}
 end
