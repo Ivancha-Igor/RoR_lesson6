@@ -17,15 +17,20 @@ class CommentsController < ApplicationController
   def destroy
     @post = Post.find(params[:post_id])
     @comment = @post.comments.find(params[:id])
-    @comment.user = current_user
-    if @comment.user
+    if @comment.user != current_user
+      redirect_to post_path(@post), notice: 'Вы не можете удалять чужие комментарии!'
+    else
       @comment.destroy
+      redirect_to post_path(@post)
     end
-    redirect_to post_path(@post)
   end
 
   private
   def comment_params
     params.require(:comment).permit(:body)
   end
+  def comment_user
+    redirect_to :back unless @comment.user == current_user
+  end
+
 end

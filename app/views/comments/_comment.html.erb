@@ -1,7 +1,8 @@
 <p>
-  <b>Комментарий:</b>
+  <b>Comment:</b>
   <%= comment.body %>
 </p>
+<p>Создал: <%= comment.user.name %></p>
 <p>
   <%= link_to 'Удалить комментарий', [comment.post, comment],
               method: :delete,
