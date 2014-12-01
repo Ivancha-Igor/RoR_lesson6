@@ -1,11 +1,18 @@
 class PostsController < ApplicationController
   before_action :set_post, only: [:show, :edit, :update, :destroy]
-  before_action :check_post_user, only: [:edit, :update, :destroy]
+  before_action :check_post_user, only: [:edit, :update, :destroy, :vote_up, :vote_down]
+  before_action :denny_rate_owner_posts, only: [:vote_up, :vote_down]
 
   # GET /posts
   # GET /posts.json
   def index
-    @posts = Post.newest
+    if params[:sort] == 'popular'
+      @posts = Post.popular
+    elsif params[:sort] == 'active'
+      @posts = Post.active
+    else
+      @posts = Post.newest
+    end
 
     respond_to do |format|
       format.html
@@ -84,20 +91,43 @@ class PostsController < ApplicationController
     end
   end
 
+  def vote_up
+    @post = Post.find(params[:id])
+    vote = Vote.new
+    vote.user = current_user
+    vote.post = @post
+    vote.rating = true
+    vote.save
+    redirect_to :back
+  end
+
+  def vote_down
+    @post = Post.find(params[:id])
+    vote = Vote.new
+    vote.user = current_user
+    vote.post = @post
+    vote.rating = false
+    vote.save
+    redirect_to :back
+  end
+
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_post
       @post = Post.find(params[:id])
     end
 
+
     def post_user(post)
       post.user.eql?(current_user)
     end
 
+    def denny_rate_owner_posts
+      redirect_to root_path if Post.find(params[:id]).user == current_user
+    end
+
     def check_post_user
-      unless current_user == @post.user
-        redirect_to root_path
-      end
+      redirect_to sessions_login_path unless current_user
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

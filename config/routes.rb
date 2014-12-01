@@ -15,6 +15,9 @@ Rails.application.routes.draw do
 
   root 'posts#index'
 
+  get	'vote_up' =>	'posts#vote_up'
+  get	'vote_down' =>	'posts#vote_down'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

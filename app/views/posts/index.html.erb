@@ -1,5 +1,5 @@
 
-  <div class="content">
+ <div class="content">
    <% if current_user %>
     <p class="create-post"><b><%= current_user.name %></b>, <%= link_to 'создать новую запись?', new_post_path %></p>
    <% end %>
@@ -11,10 +11,21 @@
         <%= image_tag avatar_url(post.user) %>
       </p>
 
+      <p class="rating">
+        <%= 'Рейтинг: ' %>
+        <% if current_user && (post.votes.where(user_id: current_user.id).count == 0) && (current_user != post.user) %>
+          <%= (link_to '+', vote_up_path(id: post.id), class: 'up') %>
+        <% end %>
+        <%= post.rating.to_s %>
+        <% if current_user && (post.votes.where(user_id: current_user.id).count == 0) && (current_user != post.user) %>
+          <%= (link_to '-', vote_down_path(id: post.id), class: 'down') %>
+        <% end %>
+      </p>
+
       <ul class="edit-list">
         <li><%= link_to 'Показать комментарии', post %></li>
         <li><%= link_to 'Редактировать', edit_post_path(post) %></li>
         <li><%= link_to 'Удалить', post, method: :delete, data: { confirm: 'Are you sure?' } %></li>
       </ul>
     <% end %>
-  </div>
+ </div>
